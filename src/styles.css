@@ -20,6 +20,10 @@ body {
   height: 100vh;
 }
 
+header {
+  display: flex;
+}
+
 header,
 footer {
   display: flex;
@@ -56,14 +60,13 @@ header > h1 {
 }
 
 .entry {
-  flex: 1;
   display: flex;
   flex-direction: column;
   background-color: rgb(92, 65, 33);
-  width: auto;
 }
 
 footer {
   display: flex;
   justify-content: center;
+  padding: 1rem;
 }

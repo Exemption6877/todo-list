@@ -15,8 +15,29 @@
   <body>
     <div class="main">
       <div class="menu">
-        <h1>123</h1>
+        <button id="create">Create new entry</button>
+        <dialog>
+          <h3>Entry info:</h3>
+
+          <form action="" method="post">
+            <button autofocus id="close-dialog">Close</button>
+            <label for="title">Book Title:</label>
+            <input type="text" name="title" id="title" />
+            <label for="author">Book Author:</label>
+            <input type="text" name="author" id="author" />
+            <label for="pages">Book Pages:</label>
+            <input type="number" name="pages" id="pages" />
+            <label for="status">Book Pages:</label>
+            <select name="status" id="status">
+              <option value="1">Read</option>
+              <option value="0">Not read</option>
+            </select>
+
+            <input type="submit" value="Submit" />
+          </form>
+        </dialog>
       </div>
+
       <div class="content">
         <div class="default container">
           <div class="entry">
