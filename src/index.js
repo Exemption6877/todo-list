@@ -46,7 +46,7 @@ submitEntry.addEventListener("click", (event) => {
 
 // delete item with filter and id
 
-const note_stash = [];
+let note_stash = [];
 
 const test_note = new Note(
   "Title",
@@ -65,7 +65,13 @@ const entryElement = (function () {
 
     const remove = createButtonImage(removeSVG, "remove button");
     remove.id = entry.id;
-    remove.addEventListener("click", {});
+    remove.addEventListener("click", () => {
+      note_stash = note_stash.filter((element) => element.id != remove.id);
+      renderContent.refresh();
+      note_stash.forEach((element) => {
+        renderContent.entries(element);
+      });
+    });
 
     const expand = createButtonImage(arrow_downSVG, "expand button");
     const edit = createButtonImage(editSVG, "edit button");
