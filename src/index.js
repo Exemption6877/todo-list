@@ -3,10 +3,10 @@ import logoSVG from "./images/checklist.svg";
 import removeSVG from "./images/delete.svg";
 import arrow_downSVG from "./images/arrow_down.svg";
 import editSVG from "./images/edit.svg";
+import prioritySVG from "./images/priority.svg";
+import { formatRelative, format, parseISO } from "date-fns";
 
 const body = document.querySelector("body");
-
-const dialog = document.querySelector("dialog");
 
 class Note {
   // will need to track the category as well.
@@ -48,15 +48,6 @@ submitEntry.addEventListener("click", (event) => {
 
 let note_stash = [];
 
-const test_note = new Note(
-  "Title",
-  "This is a description",
-  "14/08/2024",
-  "High"
-);
-
-console.log(test_note.id);
-
 const entryElement = (function () {
   // need to do button's logic obviously
   const actions = (entry) => {
@@ -85,6 +76,7 @@ const entryElement = (function () {
     container.classList.add("top-left");
 
     const status = document.createElement("input");
+
     status.type = "checkbox";
     status.id = "status";
     status.name = "status";
@@ -102,12 +94,15 @@ const entryElement = (function () {
     container.classList.add("top-right");
 
     const dueDate = document.createElement("p");
-    dueDate.textContent = entry.date;
+    const date = parseISO(entry.date);
+    dueDate.textContent = format(date, "PP");
 
     const importance = document.createElement("p");
     importance.textContent = entry.importance;
+    const importanceSVG = document.createElement("img");
+    importanceSVG.src = prioritySVG;
 
-    container.append(importance, dueDate);
+    container.append(importanceSVG, importance, dueDate);
 
     return container;
   };
@@ -183,19 +178,30 @@ const renderContent = (function () {
   return { entries, refresh };
 })();
 
-const showButton = document.querySelector("#create");
-const closeButton = document.querySelector("#close-dialog");
+const dialogLogic = (open, close, dialog) => {
+  open.addEventListener("click", (event) => {
+    dialog.show();
+    event.preventDefault();
+  });
 
-showButton.addEventListener("click", (event) => {
-  dialog.show();
-  event.preventDefault();
-});
+  close.addEventListener("click", (event) => {
+    dialog.close();
+    event.preventDefault();
+  });
+};
 
-closeButton.addEventListener("click", (event) => {
-  dialog.close();
-  event.preventDefault();
-});
+const dialogCategory = document.querySelector("#menu-creation");
+const showCategory = document.querySelector("#create-category");
+const closeCategory = document.querySelector("#close-category");
+dialogLogic(showCategory, closeCategory, dialogCategory);
 
-renderContent.entries(test_note);
+const dialogEntry = document.querySelector("#entry-creation");
+const showEntry = document.querySelector("#create-entry");
+const closeEntry = document.querySelector("#close-entry");
+dialogLogic(showEntry, closeEntry, dialogEntry);
+
+if (note_stash.length > 0) {
+  renderContent.entries(note_stash);
+}
 renderBody.header("Boy Next Door");
 renderBody.footer("©");
