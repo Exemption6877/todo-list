@@ -6,12 +6,11 @@ import editSVG from "./images/edit.svg";
 
 const body = document.querySelector("body");
 
-const showButton = document.querySelector("#create");
-const closeButton = document.querySelector("#close-dialog");
 const dialog = document.querySelector("dialog");
 
 class Note {
   // will need to track the category as well.
+  // I will filter them by categories by .filter on button press.
   constructor(title, description, date, importance) {
     this.title = title;
     this.description = description;
@@ -58,18 +57,8 @@ const test_note = new Note(
 
 console.log(test_note.id);
 
-showButton.addEventListener("click", (event) => {
-  dialog.show();
-  event.preventDefault();
-});
-
-closeButton.addEventListener("click", (event) => {
-  dialog.close();
-  event.preventDefault();
-});
-
-const renderBar = (function () {
-  //separate factory for actions later
+const entryElement = (function () {
+  // need to do button's logic obviously
   const actions = (entry) => {
     const container = document.createElement("div");
     container.classList.add("actions");
@@ -84,27 +73,7 @@ const renderBar = (function () {
     container.append(expand, edit, remove);
     return container;
   };
-  const header = (name) => {
-    const head = document.createElement("header");
-    const logo = document.createElement("img");
-    logo.src = logoSVG;
-    logo.alt = "logo";
-    const logoName = document.createElement("h1");
-    logoName.textContent = name;
-    head.appendChild(logo);
-    head.appendChild(logoName);
-    body.prepend(head);
-  };
-  const footer = (text) => {
-    const foot = document.createElement("footer");
-    foot.textContent = `${text} ${new Date().getFullYear()}`;
-    body.append(foot);
-  };
 
-  return { actions, header, footer };
-})();
-
-const renderEntryElement = (function () {
   const leftTop = (entry) => {
     const container = document.createElement("div");
     container.classList.add("top-left");
@@ -149,7 +118,28 @@ const renderEntryElement = (function () {
     return container;
   };
 
-  return { top };
+  return { actions, top };
+})();
+
+const renderBody = (function () {
+  const header = (name) => {
+    const head = document.createElement("header");
+    const logo = document.createElement("img");
+    logo.src = logoSVG;
+    logo.alt = "logo";
+    const logoName = document.createElement("h1");
+    logoName.textContent = name;
+    head.appendChild(logo);
+    head.appendChild(logoName);
+    body.prepend(head);
+  };
+  const footer = (text) => {
+    const foot = document.createElement("footer");
+    foot.textContent = `${text} ${new Date().getFullYear()}`;
+    body.append(foot);
+  };
+
+  return { header, footer };
 })();
 
 const createButtonImage = (imgSrc, alt) => {
@@ -169,24 +159,37 @@ const renderContent = (function () {
     defaultContainer.innerHTML = "";
   };
   const entries = (entry) => {
-    const entryElement = document.createElement("div");
-    entryElement.classList.add("entry");
+    const entryContainer = document.createElement("div");
+    entryContainer.classList.add("entry");
 
-    const title = renderEntryElement.top(entry);
+    const top = entryElement.top(entry);
 
     const description = document.createElement("p");
     description.classList.add("entry-description");
     description.textContent = entry.description;
 
-    const actions = renderBar.actions(entry);
+    const actions = entryElement.actions(entry);
 
-    entryElement.append(title, description, actions);
-    defaultContainer.append(entryElement);
+    entryContainer.append(top, description, actions);
+    defaultContainer.append(entryContainer);
   };
 
   return { entries, refresh };
 })();
 
+const showButton = document.querySelector("#create");
+const closeButton = document.querySelector("#close-dialog");
+
+showButton.addEventListener("click", (event) => {
+  dialog.show();
+  event.preventDefault();
+});
+
+closeButton.addEventListener("click", (event) => {
+  dialog.close();
+  event.preventDefault();
+});
+
 renderContent.entries(test_note);
-renderBar.header("Boy Next Door");
-renderBar.footer("©");
+renderBody.header("Boy Next Door");
+renderBody.footer("©");
