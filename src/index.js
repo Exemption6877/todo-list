@@ -37,6 +37,11 @@ submitEntry.addEventListener("click", (event) => {
   const entry = new Note(title, description, date, importance);
 
   note_stash.push(entry);
+  renderContent.refresh();
+  note_stash.forEach((element) => {
+    renderContent.entries(element);
+  });
+
   console.log(note_stash);
 });
 
@@ -164,7 +169,9 @@ const renderContent = (function () {
   const defaultContainer = document.querySelector(".default");
   // will need to pass some kind of an array,
   // will be using placeholder for now.
-
+  const refresh = () => {
+    defaultContainer.innerHTML = "";
+  };
   const entries = (entry) => {
     const entryElement = document.createElement("div");
     entryElement.classList.add("entry");
@@ -183,7 +190,7 @@ const renderContent = (function () {
     defaultContainer.append(entryElement);
   };
 
-  return { entries };
+  return { entries, refresh };
 })();
 
 renderContent.entries(test_note);
