@@ -162,21 +162,15 @@ const createButtonImage = (imgSrc, alt) => {
   return button;
 };
 
-// I will pass inside a class objects to generate an entry.
-// TODO: static id generator in entry class.
 const renderContent = (function () {
   const menu = document.querySelector(".menu");
   const defaultContainer = document.querySelector(".default");
-  // will need to pass some kind of an array,
-  // will be using placeholder for now.
   const refresh = () => {
     defaultContainer.innerHTML = "";
   };
   const entries = (entry) => {
     const entryElement = document.createElement("div");
     entryElement.classList.add("entry");
-
-    // from array => entry.text
 
     const title = renderEntryElement.top(entry);
 
