@@ -26,23 +26,13 @@ const renderBar = (function () {
     const container = document.createElement("div");
     container.classList.add("actions");
 
-    const remove = document.createElement("button");
-    const removeImage = document.createElement("img");
-    removeImage.src = removeSVG;
-    remove.append(removeImage);
+    const remove = createButtonImage(removeSVG, "remove button");
 
-    const revealDescription = document.createElement("button");
-    const revealDescriptionImage = document.createElement("img");
-    revealDescriptionImage.src = arrow_downSVG;
-    revealDescription.append(revealDescriptionImage);
+    const expand = createButtonImage(arrow_downSVG, "expand button");
 
-    const edit = document.createElement("button");
-    const editImage = document.createElement("img");
-    editImage.src = editSVG;
+    const edit = createButtonImage(editSVG, "edit button");
 
-    edit.append(editImage);
-
-    container.append(revealDescription, edit, remove);
+    container.append(expand, edit, remove);
     return container;
   };
   const header = (name) => {
@@ -70,6 +60,15 @@ const renderBar = (function () {
 //     const
 // })();
 
+const createButtonImage = (imgSrc, alt) => {
+  const button = document.createElement("button");
+  const image = document.createElement("img");
+  image.src = imgSrc;
+  image.alt = alt;
+  button.append(image);
+
+  return button;
+};
 // I will pass inside a class objects to generate an entry.
 // TODO: static id generator in entry class.
 const renderContent = (function () {
