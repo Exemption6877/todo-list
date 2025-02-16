@@ -1,10 +1,6 @@
 import "./styles.css";
-import logoSVG from "./images/checklist.svg";
-import removeSVG from "./images/delete.svg";
-import arrow_downSVG from "./images/arrow_down.svg";
-import editSVG from "./images/edit.svg";
-import prioritySVG from "./images/priority.svg";
-import { formatRelative, format, parseISO } from "date-fns";
+import * as icons from "./images/index.js";
+import { format, parseISO } from "date-fns";
 
 const body = document.querySelector("body");
 
@@ -46,6 +42,7 @@ submitEntry.addEventListener("click", (event) => {
 
 // delete item with filter and id
 
+// move it inside a factory
 let note_stash = [];
 
 const entryElement = (function () {
@@ -54,7 +51,7 @@ const entryElement = (function () {
     const container = document.createElement("div");
     container.classList.add("actions");
 
-    const remove = createButtonImage(removeSVG, "remove button");
+    const remove = createButtonImage(icons.removeSVG, "remove button");
     remove.id = entry.id;
     remove.addEventListener("click", () => {
       note_stash = note_stash.filter((element) => element.id != remove.id);
@@ -64,8 +61,8 @@ const entryElement = (function () {
       });
     });
 
-    const expand = createButtonImage(arrow_downSVG, "expand button");
-    const edit = createButtonImage(editSVG, "edit button");
+    const expand = createButtonImage(icons.arrow_downSVG, "expand button");
+    const edit = createButtonImage(icons.editSVG, "edit button");
 
     container.append(expand, edit, remove);
     return container;
@@ -100,7 +97,7 @@ const entryElement = (function () {
     const importance = document.createElement("p");
     importance.textContent = entry.importance;
     const importanceSVG = document.createElement("img");
-    importanceSVG.src = prioritySVG;
+    importanceSVG.src = icons.prioritySVG;
 
     container.append(importanceSVG, importance, dueDate);
 
@@ -126,7 +123,7 @@ const renderBody = (function () {
   const header = (name) => {
     const head = document.createElement("header");
     const logo = document.createElement("img");
-    logo.src = logoSVG;
+    logo.src = icons.logoSVG;
     logo.alt = "logo";
     const logoName = document.createElement("h1");
     logoName.textContent = name;
@@ -203,5 +200,5 @@ dialogLogic(showEntry, closeEntry, dialogEntry);
 if (note_stash.length > 0) {
   renderContent.entries(note_stash);
 }
-renderBody.header("Boy Next Door");
-renderBody.footer("©");
+renderBody.header("The Todo List");
+renderBody.footer("Copyright ©");
