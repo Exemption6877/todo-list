@@ -11,6 +11,7 @@ const closeButton = document.querySelector("#close-dialog");
 const dialog = document.querySelector("dialog");
 
 class Note {
+  // will need to track the category as well.
   constructor(title, description, date, importance) {
     this.title = title;
     this.description = description;
@@ -18,12 +19,30 @@ class Note {
     this.importance = importance;
     this.id = Note.generateId();
   }
-  static idCounter = 0;
+  static idCounter = 1;
 
   static generateId() {
     return this.idCounter++;
   }
 }
+
+const submitEntry = document.querySelector("#submit");
+submitEntry.addEventListener("click", (event) => {
+  const title = document.querySelector("#title").value;
+  const description = document.querySelector("#description").value;
+  const date = document.querySelector("#date").value;
+  const importance = document.querySelector("#importance").value;
+
+  event.preventDefault();
+  const entry = new Note(title, description, date, importance);
+
+  note_stash.push(entry);
+  console.log(note_stash);
+});
+
+// delete item with filter and id
+
+const note_stash = [];
 
 const test_note = new Note(
   "Title",
@@ -31,6 +50,8 @@ const test_note = new Note(
   "14/08/2024",
   "High"
 );
+
+console.log(test_note.id);
 
 showButton.addEventListener("click", (event) => {
   dialog.show();
@@ -44,11 +65,12 @@ closeButton.addEventListener("click", (event) => {
 
 const renderBar = (function () {
   //separate factory for actions later
-  const actions = () => {
+  const actions = (entry) => {
     const container = document.createElement("div");
     container.classList.add("actions");
 
     const remove = createButtonImage(removeSVG, "remove button");
+    remove.id = entry.id;
     remove.addEventListener("click", {});
 
     const expand = createButtonImage(arrow_downSVG, "expand button");
@@ -155,7 +177,7 @@ const renderContent = (function () {
     description.classList.add("entry-description");
     description.textContent = entry.description;
 
-    const actions = renderBar.actions();
+    const actions = renderBar.actions(entry);
 
     entryElement.append(title, description, actions);
     defaultContainer.append(entryElement);
@@ -165,6 +187,5 @@ const renderContent = (function () {
 })();
 
 renderContent.entries(test_note);
-
 renderBar.header("Boy Next Door");
 renderBar.footer("©");
