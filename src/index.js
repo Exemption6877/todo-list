@@ -1,5 +1,8 @@
 import "./styles.css";
 import logoSVG from "./images/checklist.svg";
+import removeSVG from "./images/delete.svg";
+import arrow_downSVG from "./images/arrow_down.svg";
+import editSVG from "./images/edit.svg";
 
 const body = document.querySelector("body");
 
@@ -18,11 +21,36 @@ closeButton.addEventListener("click", (event) => {
 });
 
 const renderBar = (function () {
+  //separate factory for actions later
+  const actions = () => {
+    const container = document.createElement("div");
+    container.classList.add("actions");
+
+    const remove = document.createElement("button");
+    const removeImage = document.createElement("img");
+    removeImage.src = removeSVG;
+    remove.append(removeImage);
+
+    const revealDescription = document.createElement("button");
+    const revealDescriptionImage = document.createElement("img");
+    revealDescriptionImage.src = arrow_downSVG;
+    revealDescription.append(revealDescriptionImage);
+
+    const edit = document.createElement("button");
+    const editImage = document.createElement("img");
+    editImage.src = editSVG;
+
+    edit.append(editImage);
+
+    container.append(revealDescription, edit, remove);
+    return container;
+  };
   const header = (name) => {
     const head = document.createElement("header");
     const logo = document.createElement("img");
     logo.src = logoSVG;
     logo.alt = "logo";
+    logo.height = "2 rem";
     const logoName = document.createElement("h1");
     logoName.textContent = name;
     head.appendChild(logo);
@@ -35,7 +63,7 @@ const renderBar = (function () {
     body.append(foot);
   };
 
-  return { header, footer };
+  return { actions, header, footer };
 })();
 
 // const renderEntryElement = (function () {
@@ -61,7 +89,8 @@ const renderContent = (function () {
     const description = document.createElement("p");
     description.textContent = "Description Test";
 
-    entry.append(title, description);
+    const actions = renderBar.actions();
+    entry.append(title, description, actions);
     content.append(entry);
   };
 

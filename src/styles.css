@@ -65,8 +65,28 @@ header > h1 {
   background-color: rgb(92, 65, 33);
 }
 
+dialog[open] {
+  background-color: var(--footer-color);
+  position: fixed;
+  top: 25vh;
+}
+
+dialog[open] > form {
+  display: flex;
+  flex-direction: column;
+}
+
 footer {
   display: flex;
   justify-content: center;
   padding: 1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.actions > button {
+  background: none;
 }
