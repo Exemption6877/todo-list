@@ -27,9 +27,7 @@ const renderBar = (function () {
     container.classList.add("actions");
 
     const remove = createButtonImage(removeSVG, "remove button");
-
     const expand = createButtonImage(arrow_downSVG, "expand button");
-
     const edit = createButtonImage(editSVG, "edit button");
 
     container.append(expand, edit, remove);
@@ -40,7 +38,6 @@ const renderBar = (function () {
     const logo = document.createElement("img");
     logo.src = logoSVG;
     logo.alt = "logo";
-    logo.height = "2 rem";
     const logoName = document.createElement("h1");
     logoName.textContent = name;
     head.appendChild(logo);
@@ -56,9 +53,53 @@ const renderBar = (function () {
   return { actions, header, footer };
 })();
 
-// const renderEntryElement = (function () {
-//     const
-// })();
+const renderEntryElement = (function () {
+  const leftTop = () => {
+    const container = document.createElement("div");
+    container.classList.add("top-left");
+
+    const status = document.createElement("input");
+    status.type = "checkbox";
+    status.id = "status";
+    status.name = "status";
+
+    const title = document.createElement("h3");
+    title.textContent = "Placeholder Title";
+
+    container.append(status, title);
+
+    return container;
+  };
+
+  const rightTop = () => {
+    const container = document.createElement("div");
+    container.classList.add("top-right");
+
+    const dueDate = document.createElement("p");
+    dueDate.textContent = "14/8/22";
+
+    const importance = document.createElement("p");
+    importance.textContent = "High";
+
+    container.append(importance, dueDate);
+
+    return container;
+  };
+
+  const top = () => {
+    const container = document.createElement("div");
+    container.classList.add("top-container");
+
+    const left = leftTop();
+    const right = rightTop();
+
+    container.append(left, right);
+
+    return container;
+  };
+
+  return { top };
+})();
 
 const createButtonImage = (imgSrc, alt) => {
   const button = document.createElement("button");
@@ -69,33 +110,36 @@ const createButtonImage = (imgSrc, alt) => {
 
   return button;
 };
+
 // I will pass inside a class objects to generate an entry.
 // TODO: static id generator in entry class.
 const renderContent = (function () {
   const menu = document.querySelector(".menu");
+  const defaultContainer = document.querySelector(".default");
   // will need to pass some kind of an array,
   // will be using placeholder for now.
 
   const entries = () => {
-    const content = document.querySelector(".content");
     const entry = document.createElement("div");
     entry.classList.add("entry");
 
     // from array => entry.text
-    const title = document.createElement("h3");
-    title.textContent = "Placeholder Title";
+
+    const title = renderEntryElement.top();
 
     const description = document.createElement("p");
     description.textContent = "Description Test";
 
     const actions = renderBar.actions();
     entry.append(title, description, actions);
-    content.append(entry);
+    defaultContainer.append(entry);
   };
 
   return { entries };
 })();
 
+renderContent.entries();
+renderContent.entries();
 renderContent.entries();
 renderBar.header("Boy Next Door");
 renderBar.footer("©");
