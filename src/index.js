@@ -10,6 +10,28 @@ const showButton = document.querySelector("#create");
 const closeButton = document.querySelector("#close-dialog");
 const dialog = document.querySelector("dialog");
 
+class Note {
+  constructor(title, description, date, importance) {
+    this.title = title;
+    this.description = description;
+    this.date = date;
+    this.importance = importance;
+    this.id = Note.generateId();
+  }
+  static idCounter = 0;
+
+  static generateId() {
+    return this.idCounter++;
+  }
+}
+
+const test_note = new Note(
+  "Title",
+  "This is a description",
+  "14/08/2024",
+  "High"
+);
+
 showButton.addEventListener("click", (event) => {
   dialog.show();
   event.preventDefault();
@@ -27,6 +49,8 @@ const renderBar = (function () {
     container.classList.add("actions");
 
     const remove = createButtonImage(removeSVG, "remove button");
+    remove.addEventListener("click", {});
+
     const expand = createButtonImage(arrow_downSVG, "expand button");
     const edit = createButtonImage(editSVG, "edit button");
 
@@ -54,7 +78,7 @@ const renderBar = (function () {
 })();
 
 const renderEntryElement = (function () {
-  const leftTop = () => {
+  const leftTop = (entry) => {
     const container = document.createElement("div");
     container.classList.add("top-left");
 
@@ -64,34 +88,34 @@ const renderEntryElement = (function () {
     status.name = "status";
 
     const title = document.createElement("h3");
-    title.textContent = "Placeholder Title";
+    title.textContent = entry.title;
 
     container.append(status, title);
 
     return container;
   };
 
-  const rightTop = () => {
+  const rightTop = (entry) => {
     const container = document.createElement("div");
     container.classList.add("top-right");
 
     const dueDate = document.createElement("p");
-    dueDate.textContent = "14/8/22";
+    dueDate.textContent = entry.date;
 
     const importance = document.createElement("p");
-    importance.textContent = "High";
+    importance.textContent = entry.importance;
 
     container.append(importance, dueDate);
 
     return container;
   };
 
-  const top = () => {
+  const top = (entry) => {
     const container = document.createElement("div");
     container.classList.add("top-container");
 
-    const left = leftTop();
-    const right = rightTop();
+    const left = leftTop(entry);
+    const right = rightTop(entry);
 
     container.append(left, right);
 
@@ -119,27 +143,28 @@ const renderContent = (function () {
   // will need to pass some kind of an array,
   // will be using placeholder for now.
 
-  const entries = () => {
-    const entry = document.createElement("div");
-    entry.classList.add("entry");
+  const entries = (entry) => {
+    const entryElement = document.createElement("div");
+    entryElement.classList.add("entry");
 
     // from array => entry.text
 
-    const title = renderEntryElement.top();
+    const title = renderEntryElement.top(entry);
 
     const description = document.createElement("p");
-    description.textContent = "Description Test";
+    description.classList.add("entry-description");
+    description.textContent = entry.description;
 
     const actions = renderBar.actions();
-    entry.append(title, description, actions);
-    defaultContainer.append(entry);
+
+    entryElement.append(title, description, actions);
+    defaultContainer.append(entryElement);
   };
 
   return { entries };
 })();
 
-renderContent.entries();
-renderContent.entries();
-renderContent.entries();
+renderContent.entries(test_note);
+
 renderBar.header("Boy Next Door");
 renderBar.footer("©");

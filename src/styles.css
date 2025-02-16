@@ -82,6 +82,11 @@ header > h1 {
   display: flex;
   flex-direction: column;
   background-color: rgb(92, 65, 33);
+  padding-bottom: 1rem;
+}
+
+.entry-description {
+  display: none;
 }
 
 dialog[open] {
@@ -104,6 +109,8 @@ footer {
 .actions {
   display: flex;
   gap: 0.5rem;
+  justify-content: flex-end;
+  padding-right: 1rem;
 }
 
 .actions > button {
