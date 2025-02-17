@@ -52,6 +52,14 @@ const menuRender = () => {
       const categoryEntry = document.createElement("button");
       categoryEntry.classList.add("category-entry");
       categoryEntry.textContent = element;
+
+      categoryEntry.addEventListener("click", () => {
+        const filteredNotes = note_stash.filter(
+          (note) => note.category === element
+        );
+        renderContent.refresh();
+        filteredNotes.forEach(renderContent.entries);
+      });
       menu.appendChild(categoryEntry);
       categoryOption();
     });
@@ -71,31 +79,23 @@ const categoryOption = () => {
   }
 };
 
-categoryOption();
-menuRender();
-
 const submitEntry = document.querySelector("#submit");
 submitEntry.addEventListener("click", (event) => {
   const title = document.querySelector("#title").value;
   const description = document.querySelector("#description").value;
   const date = document.querySelector("#date").value;
   const importance = document.querySelector("#importance").value;
+  const category = document.querySelector("#category").value;
 
   event.preventDefault();
-  const entry = new Note(title, description, date, importance);
+  const entry = new Note(title, description, date, importance, category);
 
-  const categoryCheck = category_stash.find(
-    (element) => element.category == entry.category
-  );
   note_stash.push(entry);
-  if (categoryCheck == undefined) {
-    category_stash.push(entry.category);
-  }
+
   renderContent.refresh();
   note_stash.forEach((element) => {
     renderContent.entries(element);
   });
-  menuRender();
   console.log(note_stash);
 });
 
@@ -292,5 +292,8 @@ dialogLogic(showEntry, closeEntry, dialogEntry);
 if (note_stash.length > 0) {
   note_stash.forEach(renderContent.entries);
 }
+
+categoryOption();
+menuRender();
 renderBody.header("The Todo List");
 renderBody.footer("Copyright ©");
