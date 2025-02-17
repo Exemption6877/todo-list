@@ -4,12 +4,13 @@ import { format, parseISO } from "date-fns";
 
 const body = document.querySelector("body");
 
+//local storage for idcounter and these two
 let note_stash = [];
 let category_stash = ["General"];
 
 class Note {
-  // will need to track the category as well.
-  // I will filter them by categories by .filter on button press.
+  // implement input checks
+
   constructor(title, description, date, importance, category = "General") {
     this.title = title;
     this.description = description;
@@ -268,6 +269,9 @@ const renderContent = (function () {
 })();
 
 const dialogLogic = (open, close, dialog) => {
+  const dialog = document.querySelector(dialog);
+  const show = document.querySelector(open);
+  const close = document.querySelector(close);
   open.addEventListener("click", (event) => {
     dialog.show();
     event.preventDefault();
@@ -279,15 +283,8 @@ const dialogLogic = (open, close, dialog) => {
   });
 };
 
-const dialogCategory = document.querySelector("#menu-creation");
-const showCategory = document.querySelector("#create-category");
-const closeCategory = document.querySelector("#close-category");
-dialogLogic(showCategory, closeCategory, dialogCategory);
-
-const dialogEntry = document.querySelector("#entry-creation");
-const showEntry = document.querySelector("#create-entry");
-const closeEntry = document.querySelector("#close-entry");
-dialogLogic(showEntry, closeEntry, dialogEntry);
+dialogLogic("#create-category", "#close-category", "#menu-creation");
+dialogLogic("#create-entry", "#close-entry", "#entry-creation");
 
 if (note_stash.length > 0) {
   note_stash.forEach(renderContent.entries);
