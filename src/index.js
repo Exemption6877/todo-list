@@ -1,5 +1,5 @@
 import "./styles.css";
-import * as icons from "./images/index.js";
+import * as icons from "./images/icons.js";
 import { format, parseISO } from "date-fns";
 
 const body = document.querySelector("body");
@@ -63,12 +63,34 @@ const entryElement = (function () {
 
     const expand = createButtonImage(icons.arrow_downSVG, "expand button");
     expand.addEventListener("click", () => {
-      const entryElement = document.getElementById(entry.id);
+      const entryElement = document.getElementById(`description-${entry.id}`);
       if (entryElement) {
         entryElement.classList.toggle("hidden");
       }
     });
     const edit = createButtonImage(icons.editSVG, "edit button");
+    edit.addEventListener("click", () => {
+      const entryContainer = document.getElementById(`container-${entry.id}`);
+      const titleInput = entryContainer.querySelector(".entry-title");
+      const descriptionInput =
+        entryContainer.querySelector(".entry-description");
+
+      const isEditable = titleInput.getAttribute("contenteditable") === "true";
+
+      if (isEditable) {
+        entry.title = titleInput.textContent;
+        entry.description = descriptionInput.textContent;
+
+        titleInput.setAttribute("contenteditable", "false");
+        descriptionInput.setAttribute("contenteditable", "false");
+      } else {
+        titleInput.setAttribute("contenteditable", "true");
+        descriptionInput.setAttribute("contenteditable", "true");
+
+        edit.textContent = "Save";
+        edit.style.color = "white";
+      }
+    });
 
     container.append(expand, edit, remove);
     return container;
@@ -85,7 +107,9 @@ const entryElement = (function () {
     status.name = "status";
 
     const title = document.createElement("h3");
+    title.classList.add("entry-title");
     title.textContent = entry.title;
+    title.setAttribute("contenteditable", "false");
 
     container.append(status, title);
 
@@ -129,12 +153,13 @@ const renderBody = (function () {
   const header = (name) => {
     const head = document.createElement("header");
     const logo = document.createElement("img");
+
     logo.src = icons.logoSVG;
     logo.alt = "logo";
     const logoName = document.createElement("h1");
     logoName.textContent = name;
-    head.appendChild(logo);
-    head.appendChild(logoName);
+    head.append(logo, logoName);
+
     body.prepend(head);
   };
   const footer = (text) => {
@@ -165,6 +190,7 @@ const renderContent = (function () {
   const entries = (entry) => {
     const entryContainer = document.createElement("div");
     entryContainer.classList.add("entry");
+    entryContainer.id = `container-${entry.id}`;
 
     const top = entryElement.top(entry);
 
@@ -172,7 +198,8 @@ const renderContent = (function () {
     description.classList.add("entry-description");
     description.classList.add("hidden");
     description.textContent = entry.description;
-    description.id = entry.id;
+    description.setAttribute("contenteditable", "false");
+    description.id = `description-${entry.id}`;
 
     const actions = entryElement.actions(entry);
 
