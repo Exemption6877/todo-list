@@ -76,7 +76,6 @@ header > h1 {
 .top-right {
   display: flex;
   gap: 1rem;
-  align-items: center;
 }
 
 .entry {
@@ -87,8 +86,7 @@ header > h1 {
 }
 
 .entry-description {
-  align-self: flex-start;
-  padding-left: 3rem;
+  display: none;
 }
 
 dialog[open] {
@@ -117,24 +115,4 @@ footer {
 
 .actions > button {
   background: none;
-}
-
-.importance-container {
-  display: flex;
-  flex-direction: row;
-  padding-right: 2rem;
-  align-items: center;
-}
-
-.importance-container > img {
-  height: 2rem;
-}
-
-.top-right {
-  display: flex;
-  flex-direction: row;
-}
-
-.hidden {
-  display: none;
 }

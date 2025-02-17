@@ -56,17 +56,12 @@ const entryElement = (function () {
     remove.addEventListener("click", () => {
       note_stash = note_stash.filter((element) => element.id != remove.id);
       renderContent.refresh();
-      note_stash.forEach(renderContent.entries);
+      note_stash.forEach((element) => {
+        renderContent.entries(element);
+      });
     });
 
     const expand = createButtonImage(icons.arrow_downSVG, "expand button");
-    expand.id = entry.id;
-    expand.addEventListener("click", () => {
-      const entryElement = document.getElementById(entry.id);
-      if (entryElement) {
-        entryElement.classList.toggle("hidden");
-      }
-    });
     const edit = createButtonImage(icons.editSVG, "edit button");
 
     container.append(expand, edit, remove);
@@ -99,17 +94,12 @@ const entryElement = (function () {
     const date = parseISO(entry.date);
     dueDate.textContent = format(date, "PP");
 
-    const importanceContainer = document.createElement("div");
-    importanceContainer.classList.add("importance-container");
-
     const importance = document.createElement("p");
     importance.textContent = entry.importance;
     const importanceSVG = document.createElement("img");
     importanceSVG.src = icons.prioritySVG;
 
-    importanceContainer.append(importanceSVG, importance);
-
-    container.append(importanceContainer, dueDate);
+    container.append(importanceSVG, importance, dueDate);
 
     return container;
   };
@@ -174,9 +164,7 @@ const renderContent = (function () {
 
     const description = document.createElement("p");
     description.classList.add("entry-description");
-    description.classList.add("hidden");
     description.textContent = entry.description;
-    description.id = entry.id;
 
     const actions = entryElement.actions(entry);
 
@@ -187,12 +175,8 @@ const renderContent = (function () {
   return { entries, refresh };
 })();
 
-const dialogLogic = (openSelector, closeSelector, dialogSelector) => {
-  const dialog = document.querySelector(dialogSelector);
-  const show = document.querySelector(openSelector);
-  const close = document.querySelector(closeSelector);
-
-  show.addEventListener("click", (event) => {
+const dialogLogic = (open, close, dialog) => {
+  open.addEventListener("click", (event) => {
     dialog.show();
     event.preventDefault();
   });
@@ -203,11 +187,18 @@ const dialogLogic = (openSelector, closeSelector, dialogSelector) => {
   });
 };
 
-dialogLogic("#create-category", "#close-category", "#menu-creation");
-dialogLogic("#create-entry", "#close-entry", "#entry-creation");
+const dialogCategory = document.querySelector("#menu-creation");
+const showCategory = document.querySelector("#create-category");
+const closeCategory = document.querySelector("#close-category");
+dialogLogic(showCategory, closeCategory, dialogCategory);
+
+const dialogEntry = document.querySelector("#entry-creation");
+const showEntry = document.querySelector("#create-entry");
+const closeEntry = document.querySelector("#close-entry");
+dialogLogic(showEntry, closeEntry, dialogEntry);
 
 if (note_stash.length > 0) {
-  note_stash.forEach(renderContent.entries);
+  renderContent.entries(note_stash);
 }
 renderBody.header("The Todo List");
 renderBody.footer("Copyright ©");
