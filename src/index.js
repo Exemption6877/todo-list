@@ -4,14 +4,18 @@ import { format, parseISO } from "date-fns";
 
 const body = document.querySelector("body");
 
+let note_stash = [];
+let category_stash = ["General"];
+
 class Note {
   // will need to track the category as well.
   // I will filter them by categories by .filter on button press.
-  constructor(title, description, date, importance) {
+  constructor(title, description, date, importance, category = "General") {
     this.title = title;
     this.description = description;
     this.date = date;
     this.importance = importance;
+    this.category = category || "General";
     this.id = Note.generateId();
   }
   static idCounter = 1;
@@ -20,6 +24,40 @@ class Note {
     return this.idCounter++;
   }
 }
+
+const submitCategory = document.querySelector("#submit-category");
+submitCategory.addEventListener("click", (event) => {
+  event.preventDefault();
+  const categoryName = document.querySelector("#category-name").value;
+  const categoryCheck = category_stash.find(
+    (element) => element === categoryName
+  );
+  if (categoryCheck === undefined) {
+    category_stash.push(categoryName);
+    menuRender();
+    console.log(category_stash);
+  } else {
+    console.log("Same exists");
+  }
+});
+
+const menuRender = () => {
+  if (category_stash.length > 0) {
+    const menu = document.querySelector(".menu");
+    const selectAllChildren = document.querySelectorAll(".category-entry");
+
+    selectAllChildren.forEach((element) => element.remove());
+
+    category_stash.forEach((element) => {
+      const categoryEntry = document.createElement("button");
+      categoryEntry.classList.add("category-entry");
+      categoryEntry.textContent = element;
+      menu.appendChild(categoryEntry);
+    });
+  }
+};
+
+menuRender();
 
 const submitEntry = document.querySelector("#submit");
 submitEntry.addEventListener("click", (event) => {
@@ -31,19 +69,24 @@ submitEntry.addEventListener("click", (event) => {
   event.preventDefault();
   const entry = new Note(title, description, date, importance);
 
+  const categoryCheck = category_stash.find(
+    (element) => element.category == entry.category
+  );
   note_stash.push(entry);
+  if (categoryCheck == undefined) {
+    category_stash.push(entry.category);
+  }
   renderContent.refresh();
   note_stash.forEach((element) => {
     renderContent.entries(element);
   });
-
+  menuRender();
   console.log(note_stash);
 });
 
 // delete item with filter and id
 
 // move it inside a factory
-let note_stash = [];
 
 const entryElement = (function () {
   // need to do button's logic obviously
@@ -182,7 +225,6 @@ const createButtonImage = (imgSrc, alt) => {
 };
 
 const renderContent = (function () {
-  const menu = document.querySelector(".menu");
   const defaultContainer = document.querySelector(".default");
   const refresh = () => {
     defaultContainer.innerHTML = "";
