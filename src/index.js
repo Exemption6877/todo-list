@@ -62,6 +62,12 @@ const entryElement = (function () {
     });
 
     const expand = createButtonImage(icons.arrow_downSVG, "expand button");
+    expand.addEventListener("click", () => {
+      const entryElement = document.getElementById(entry.id);
+      if (entryElement) {
+        entryElement.classList.toggle("hidden");
+      }
+    });
     const edit = createButtonImage(icons.editSVG, "edit button");
 
     container.append(expand, edit, remove);
@@ -164,7 +170,9 @@ const renderContent = (function () {
 
     const description = document.createElement("p");
     description.classList.add("entry-description");
+    description.classList.add("hidden");
     description.textContent = entry.description;
+    description.id = entry.id;
 
     const actions = entryElement.actions(entry);
 
@@ -198,7 +206,7 @@ const closeEntry = document.querySelector("#close-entry");
 dialogLogic(showEntry, closeEntry, dialogEntry);
 
 if (note_stash.length > 0) {
-  renderContent.entries(note_stash);
+  note_stash.forEach(renderContent.entries);
 }
 renderBody.header("The Todo List");
 renderBody.footer("Copyright ©");
