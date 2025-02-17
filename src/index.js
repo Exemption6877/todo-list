@@ -1,6 +1,6 @@
 import "./styles.css";
 import * as icons from "./images/icons.js";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, isValid } from "date-fns";
 
 const body = document.querySelector("body");
 
@@ -50,6 +50,30 @@ submitCategory.addEventListener("click", (event) => {
   }
 });
 
+const inputValidation = (function () {
+  const textInput = (text) => {
+    return text.length > 0;
+  };
+
+  const dateInput = (date) => {
+    return isValid(parseISO(date));
+  };
+
+  const selectInput = (selectQuery) => {
+    const options = Array.from(selectQuery.options).map(
+      (option) => option.value
+    );
+
+    return options.includes(selectQuery.value);
+  };
+
+  const throwError = (invalid) => {
+    return `Invalid ${invalid} input.`;
+  };
+
+  return { textInput, dateInput, selectInput, throwError };
+})();
+
 const menuRender = () => {
   if (category_stash.length > 0) {
     const menu = document.querySelector(".menu");
@@ -90,23 +114,55 @@ const categoryOption = () => {
 
 const submitEntry = document.querySelector("#submit");
 submitEntry.addEventListener("click", (event) => {
+  event.preventDefault();
   const title = document.querySelector("#title").value;
+
   const description = document.querySelector("#description").value;
+
   const date = document.querySelector("#date").value;
+
   const importance = document.querySelector("#importance").value;
+
   const category = document.querySelector("#category").value;
 
-  event.preventDefault();
-  const entry = new Note(title, description, date, importance, category);
+  const entryDialog = document.querySelector("#entry-creation");
 
-  note_stash.push(entry);
-  localStorage.setItem("note_stash", JSON.stringify(note_stash));
+  const categorySelector = document.querySelector("#category");
+  const importanceSelector = document.querySelector("#importance");
+  const errorDOM = document.createElement("p");
+  errorDOM.classList.add("entry-error");
 
-  renderContent.refresh();
-  note_stash.forEach((element) => {
-    renderContent.entries(element);
-  });
-  console.log(note_stash);
+  const queryError = document.querySelector(".entry-error");
+  if (queryError) {
+    queryError.remove();
+  }
+
+  if (
+    inputValidation.dateInput(date) &&
+    inputValidation.textInput(title) &&
+    inputValidation.selectInput(categorySelector) &&
+    inputValidation.selectInput(importanceSelector)
+  ) {
+    const entry = new Note(title, description, date, importance, category);
+
+    note_stash.push(entry);
+    localStorage.setItem("note_stash", JSON.stringify(note_stash));
+
+    renderContent.refresh();
+    note_stash.forEach((element) => {
+      renderContent.entries(element);
+    });
+    console.log(note_stash);
+  } else if (!inputValidation.dateInput(date)) {
+    errorDOM.textContent = inputValidation.throwError("date");
+    entryDialog.prepend(errorDOM);
+  } else if (!inputValidation.textInput(title)) {
+    errorDOM.textContent = inputValidation.throwError("title");
+    entryDialog.prepend(errorDOM);
+  } else if (!inputValidation.selectInput(categorySelector)) {
+    errorDOM.textContent = inputValidation.throwError("select option");
+    entryDialog.prepend(errorDOM);
+  }
 });
 
 // delete item with filter and id
@@ -191,8 +247,8 @@ const entryElement = (function () {
     container.classList.add("top-right");
 
     const dueDate = document.createElement("p");
-    const date = parseISO(entry.date);
-    dueDate.textContent = format(date, "PP");
+    const date = entry.date;
+    dueDate.textContent = format(parseISO(date), "PP");
 
     const importance = document.createElement("p");
     importance.textContent = entry.importance;

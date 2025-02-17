@@ -139,3 +139,6 @@ footer {
   display: none;
 }
 
+.entry-error {
+  color: red;
+}
