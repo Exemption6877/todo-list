@@ -53,10 +53,25 @@ const menuRender = () => {
       categoryEntry.classList.add("category-entry");
       categoryEntry.textContent = element;
       menu.appendChild(categoryEntry);
+      categoryOption();
     });
   }
 };
 
+const categoryOption = () => {
+  if (category_stash.length > 0) {
+    const selectInput = document.querySelector("#category");
+    selectInput.innerHTML = "";
+    category_stash.forEach((element) => {
+      const option = document.createElement("option");
+      option.value = element;
+      option.textContent = element;
+      selectInput.append(option);
+    });
+  }
+};
+
+categoryOption();
 menuRender();
 
 const submitEntry = document.querySelector("#submit");
