@@ -5,8 +5,10 @@ import { format, parseISO } from "date-fns";
 const body = document.querySelector("body");
 
 //local storage for idcounter and these two
-let note_stash = [];
-let category_stash = ["General"];
+let note_stash = JSON.parse(localStorage.getItem("note_stash")) || [];
+let category_stash = JSON.parse(localStorage.getItem("category_stash")) || [
+  "General",
+];
 
 class Note {
   // implement input checks
@@ -22,7 +24,10 @@ class Note {
   static idCounter = 1;
 
   static generateId() {
-    return this.idCounter++;
+    const newId = this.idCounter;
+    this.idCounter++;
+    localStorage.setItem("idCounter", this.idCounter);
+    return newId;
   }
 }
 
@@ -35,7 +40,10 @@ submitCategory.addEventListener("click", (event) => {
   );
   if (categoryCheck === undefined) {
     category_stash.push(categoryName);
+    localStorage.setItem("category_stash", JSON.stringify(category_stash));
+
     menuRender();
+
     console.log(category_stash);
   } else {
     console.log("Same exists");
@@ -92,6 +100,7 @@ submitEntry.addEventListener("click", (event) => {
   const entry = new Note(title, description, date, importance, category);
 
   note_stash.push(entry);
+  localStorage.setItem("note_stash", JSON.stringify(note_stash));
 
   renderContent.refresh();
   note_stash.forEach((element) => {
@@ -114,6 +123,7 @@ const entryElement = (function () {
     remove.id = entry.id;
     remove.addEventListener("click", () => {
       note_stash = note_stash.filter((element) => element.id != remove.id);
+      localStorage.setItem("note_stash", JSON.stringify(note_stash));
       renderContent.refresh();
       note_stash.forEach((element) => {
         renderContent.entries(element);
@@ -142,6 +152,7 @@ const entryElement = (function () {
 
         titleInput.setAttribute("contenteditable", "false");
         descriptionInput.setAttribute("contenteditable", "false");
+        localStorage.setItem("note_stash", JSON.stringify(note_stash));
       } else {
         titleInput.setAttribute("contenteditable", "true");
         descriptionInput.setAttribute("contenteditable", "true");
@@ -268,16 +279,16 @@ const renderContent = (function () {
   return { entries, refresh };
 })();
 
-const dialogLogic = (open, close, dialog) => {
-  const dialog = document.querySelector(dialog);
+const dialogLogic = (open, close, dialogElem) => {
+  const dialog = document.querySelector(dialogElem);
   const show = document.querySelector(open);
-  const close = document.querySelector(close);
-  open.addEventListener("click", (event) => {
+  const closeElem = document.querySelector(close);
+  show.addEventListener("click", (event) => {
     dialog.show();
     event.preventDefault();
   });
 
-  close.addEventListener("click", (event) => {
+  closeElem.addEventListener("click", (event) => {
     dialog.close();
     event.preventDefault();
   });
