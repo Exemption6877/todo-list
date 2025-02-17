@@ -142,3 +142,14 @@ footer {
 .entry-error {
   color: red;
 }
+
+.low {
+  background-color: green;
+}
+
+.medium {
+  background-color: orange;
+}
+.high {
+  background-color: red;
+}

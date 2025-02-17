@@ -316,7 +316,7 @@ const renderContent = (function () {
     const entryContainer = document.createElement("div");
     entryContainer.classList.add("entry");
     entryContainer.id = `container-${entry.id}`;
-
+    entryContainer.classList.add(`${entry.importance}`);
     const top = entryElement.top(entry);
 
     const description = document.createElement("p");
